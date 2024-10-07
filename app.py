@@ -3,6 +3,7 @@ from flask_cors import CORS
 from blueprints.ReadCSV import csv_blueprint
 import config
 from extensions import db
+from flask_migrate import Migrate
 
 # 初始化Flask应用
 app = Flask(__name__)
@@ -14,12 +15,10 @@ app.register_blueprint(csv_blueprint)
 # bind config
 app.config.from_object(config)
 
-# 初始化数据库
+# bind SQLAlchemy with app
 db.init_app(app)
 
-
-with app.app_context():
-    db.create_all()
+migrate = Migrate(app, db)
 
 @app.route('/')
 def upload_file():
